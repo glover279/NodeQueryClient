@@ -11,39 +11,42 @@ import java.sql.*;
  * @author Robert
  */
 public class DB {
-    private static String host="jdbc:derby://localhost:1527/nq";
-    private String uname="robert";
-    private String pass="test";
+    private static String host="jdbc:derby://localhost:1527/nqc";
+    private static String uname="robert";
+    private static String pass="password";
     private static Connection conn = null;
     private static Statement stmt = null;
-public static void main(String[] args){
+public DB(){
+createConnection();
 
 }
  public static void createConnection()
     {
         try
         {
-            Class.forName("org.apache.derby.jdbc.ClientDriver").newInstance();
+            Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
             //Get a connection
-            conn = DriverManager.getConnection(host); 
+            conn = DriverManager.getConnection(host, uname, pass); 
         }
         catch (Exception except)
         {
             except.printStackTrace();
+            System.out.println("CAUGHTERR");
         }
     }
-  public static void insertInto(String Name,int tz,int totreq,int ratelim, int maxserv, String APIkey)
+  public static void insertInto(String Name,int tz,int totreq,int ratelim, int maxserv)
     {
         try
         {
             stmt = conn.createStatement();
-            stmt.execute("insert into " + "tblAccount" + " values (" +
-                    Name + ",'" + tz + ",'" +totreq+ ",'" +ratelim+",'"+maxserv+",'"+APIkey+"')");
+            stmt.execute("INSERT INTO tblAccount" + " values('"+Name+"'," + tz + "," +totreq+ "," +ratelim+","+maxserv+")");  
+                     //  ON DUPLICATE KEY UPDATE \"+\"NAME=\"+Name+\", TIMEZONE=\"+tz+\" TOTALAPICALLS=\"+totreq+\", DETECTEDRATE_LIMIT=\"+ratelim+\", MAXALLOWEDSERVERS=\"+maxserv"
             stmt.close();
         }
         catch (SQLException sqlExcept)
         {
             sqlExcept.printStackTrace();
+            System.out.println("C@");
         }
     }
     

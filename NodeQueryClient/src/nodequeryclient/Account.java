@@ -5,6 +5,7 @@
  */
 package nodequeryclient;
 
+import org.joda.time.DateTimeZone;
 import org.json.JSONObject;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,8 +13,10 @@ import org.springframework.web.client.RestTemplate;
  *
  * @author Robert
  */
+
 public class Account {
-    private String api;
+    private String api="R0ScJcFjU3v6T1VjllIy7m7iRQHMoBW40d5oceDCJKhqhxNg";
+    
     public void setAPI()
     {
     
@@ -44,7 +47,8 @@ public class Account {
     public String getName()
     {
     JSONObject obj = new JSONObject(getAccount());
-String Name = obj.getJSONObject("data").getString("name");
+    String Name=obj.getJSONObject("data").getString("name");
+ Name = Name.replaceAll("\\s",""); 
 
     System.out.println("Name: "+Name);
         return Name;
@@ -86,10 +90,18 @@ int rl = obj.getJSONObject("data").getJSONObject("api").getInt("rate_limit");
         return rl;
     
     }
+    public DateTimeZone getTimeInzone()
+    {
+        DateTimeZone zoneUTC = DateTimeZone.forOffsetHours(getTimezone());
+        return zoneUTC;
+    }
+    
+    
+    
     public void InsertAccount()
     {
     DB db3=new DB();
-    db3.insertInto(getName(),getTimezone(),getRequests(),getRateLimit(),getMaxServ(),getAPI());
+    db3.insertInto(getName(),getTimezone(),getRequests(),getRateLimit(),getMaxServ());
     }
     
 }
